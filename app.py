@@ -291,12 +291,18 @@ if generate_button:
                 )
                 
                 raw_txt = response.choices[0].message.content.strip()
-                if raw_txt.startswith("
-```json"):
+                
+                # Strip markdown code blocks if present
+                if raw_txt.startswith("```json"):
                     raw_txt = raw_txt[7:]
-                if raw_txt.endswith("
-```"):
+                elif raw_txt.startswith("```"):
+                    raw_txt = raw_txt[3:]
+                    
+                if raw_txt.endswith("```"):
                     raw_txt = raw_txt[:-3]
+                
+                raw_txt = raw_txt.strip()
+                data = json.loads(raw_txt)
                 
                 data = json.loads(raw_txt.strip())
                 st.session_state['generated_data'] = data
